@@ -1,5 +1,5 @@
 const express = require("express");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const app = express();
 const cors = require("cors");
@@ -31,9 +31,25 @@ const uri = `mongodb+srv://${process.env.USER_Name}:${process.env.USER_PASS}@clu
           res.send(result);
         });
 
+        // to provide single coffee data using id
+        app.get('/coffees/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = await coffeeCollection.findOne(query);
+            res.send(result)
+        })
+
         app.post('/coffees', async(req, res) => {
             const coffessData = req.body;            
             const result = await coffeeCollection.insertOne(coffessData);
+            res.send(result)
+        })
+
+
+        app.delete('/coffees/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = await coffeeCollection.deleteOne(query);
             res.send(result)
         })
 
