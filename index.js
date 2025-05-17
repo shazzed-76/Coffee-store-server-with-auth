@@ -22,6 +22,21 @@ const uri = `mongodb+srv://${process.env.USER_Name}:${process.env.USER_PASS}@clu
     try {
       // Connect the client to the server	(optional starting in v4.7)
       await client.connect();
+        const coffeeCollection = client.db('coffeeDB').collection('coffees');
+
+
+        app.get("/coffees", async (req, res) => {
+          const cursor = coffeeCollection.find();
+          const result = await cursor.toArray();
+          res.send(result);
+        });
+
+        app.post('/coffees', async(req, res) => {
+            const coffessData = req.body;            
+            const result = await coffeeCollection.insertOne(coffessData);
+            res.send(result)
+        })
+
       // Send a ping to confirm a successful connection
       await client.db("admin").command({ ping: 1 });
       console.log(
