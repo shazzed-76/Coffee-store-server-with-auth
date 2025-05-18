@@ -11,6 +11,7 @@ app.use(express.json());
 // mongodb connection string
 const uri = `mongodb+srv://${process.env.USER_Name}:${process.env.USER_PASS}@cluster0.dqritdj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
+
   const client = new MongoClient(uri, {
     serverApi: {
       version: ServerApiVersion.v1,
@@ -23,6 +24,7 @@ const uri = `mongodb+srv://${process.env.USER_Name}:${process.env.USER_PASS}@clu
       // Connect the client to the server	(optional starting in v4.7)
       await client.connect();
         const coffeeCollection = client.db('coffeeDB').collection('coffees');
+        const userCollection = client.db('coffeeDB').collection('users')
 
 
         app.get("/coffees", async (req, res) => {
@@ -64,6 +66,20 @@ const uri = `mongodb+srv://${process.env.USER_Name}:${process.env.USER_PASS}@clu
             const id = req.params.id;
             const query = {_id: new ObjectId(id)};
             const result = await coffeeCollection.deleteOne(query);
+            res.send(result)
+        })
+
+
+        //APIs for users
+
+        app.get('/users', async(req, res) => {
+           const result = await userCollection.find().toArray();
+           res.send(result)
+        })
+
+        app.post('/users', async(req, res) => {
+            const userInfo = req.body;
+            const result = await userCollection.insertOne(userInfo);
             res.send(result)
         })
 
