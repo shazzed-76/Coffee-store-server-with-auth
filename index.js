@@ -45,6 +45,20 @@ const uri = `mongodb+srv://${process.env.USER_Name}:${process.env.USER_PASS}@clu
             res.send(result)
         })
 
+        app.put('/coffees/:id', async(req, res) => {
+            const id = req.params.id;
+            const newDoc = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+
+            const updatedDoc = {
+                $set: newDoc
+            };
+
+            const result = await coffeeCollection.updateOne(filter, updatedDoc, options);
+
+            res.send(result)
+        })
 
         app.delete('/coffees/:id', async(req, res) => {
             const id = req.params.id;
